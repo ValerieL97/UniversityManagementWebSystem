@@ -3,10 +3,10 @@ an University Management Web System using the Spring Boot, Spring MVC, Thymeleaf
 
 The main features:
 
--providing users with the possibility of loging in and registering(only students that exist in the database)
--the users are admins and students
--admins can create, edit, and delete students, courses, classes, teachers, student's results, and departments from the database
--students can see only their personal data and their results
+   -providing users with the possibility of loging in and registering(only students that exist in the database)
+   -the users are admins and students
+   -admins can create, edit, and delete students, courses, classes, teachers, student's results, and departments from the database
+   -students can see only their personal data and their results
 
 
 
