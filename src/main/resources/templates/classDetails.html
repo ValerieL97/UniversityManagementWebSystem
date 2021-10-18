@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+            <li class="navbar-brand"><a th:href="@{/departments}">Departments</a></li>
+        </div>
+        <ul class="nav navbar-nav">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </ul>
+    </div>
+</nav>
+<div class ="container">
+    <h1 class="text-center">
+        <span th:text="${className}" th:remove="tag"></span>
+    </h1>
+    <div class="row">
+        <h2>Results</h2>
+    </div>
+    <div class="row">
+        <div class = col-Lg-3>
+            <a th:href = "@{/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/newResult(departmentId=${department.departmentId}, courseId=${course.courseId}, classId=${class.classId})}" class ="btn btn-primary btn-sm mb-3">New Result</a>
+        </div>
+    </div>
+    <table class = "table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Student</th>
+            <th>Semester</th>
+            <th>Result</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="result: ${results}">
+            <td th:text="${result.student.studentName}"></td>
+            <td th:text="${result.student.year}"></td>
+            <td th:text="${result.result}"></td>
+            <td>
+                <a th:href="@{/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/r-{resultId}(departmentId=${department.departmentId},courseId=${course.courseId},classId=${class.classId}, resultId=${result.resultId})}"
+                   class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

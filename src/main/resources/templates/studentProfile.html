@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>University Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </ul>
+    </div>
+</nav>
+<div class ="container">
+    <div class="row">
+        <h1>Personal Data</h1>
+    </div>
+    <table class = "table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>BirthDate</th>
+            <th>Email</th>
+            <th>PhoneNumber</th>
+            <th>Course</th>
+            <th>Year</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student: ${students}">
+            <td th:text="${student.studentName}"></td>
+            <td th:text="${student.dateBirth}"></td>
+            <td th:text="${student.email}"></td>
+            <td th:text="${student.phoneNumber}"></td>
+            <td th:text="${student.course.name}"></td>
+            <td th:text="${student.year}"></td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<div class ="container">
+    <div class="row">
+        <h1>Results</h1>
+    </div>
+    <table class = "table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Class Name</th>
+            <th>Result</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="result: ${results}">
+            <td th:text="${result.classes.className}"></td>
+            <td th:text="${result.result}"></td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+
+</body>
+</html>

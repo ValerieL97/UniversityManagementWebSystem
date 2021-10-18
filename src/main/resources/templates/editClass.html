@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit course</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+            <li class="navbar-brand"><a th:href="@{/departments}">Departments</a></li>
+            <li class="navbar-brand"><a th:href="@{/departments/details-d{departmentId}/details-c{courseId}(departmentId=${department.departmentId},courseId=${course.courseId})}">Classes</a></li>
+        </div>
+        <ul class="nav navbar-nav">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <h1 class="text-center">Edit Course</h1>
+            <div class="card-body">
+                <form th:action="@{/departments/details-d{departmentId}/details-c{courseId}/class-{classId}(departmentId=${department.departmentId}, courseId=${course.courseId}, classId=${classes.classId})}" th:object="${classes}" method="POST">
+                    <div class="form-group">
+                        <label>Name:</label>
+                        <input  type="text"
+                                name="className"
+                                th:field="*{className}"
+                                class="form-control"
+                                placeholder="Enter class's name"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label> Course:</label>
+                        <select th:field="*{course}">
+                            <option th:each="course:${courses}"
+                                    th:text="${course.name}"
+                                    th:value="${course.courseId}">
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label> Teacher:</label>
+                        <select th:field="*{teacher}">
+                            <option th:each="teacher:${teachers}"
+                                    th:text="${teacher.teacherName}"
+                                    th:value="${teacher.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duration(semesters):</label>
+                        <select id="durationClass" name="duration" th:field="*{duration}">
+                            <option th:value="1">1</option>
+                            <option th:value="2">2</option>
+                            <option th:value="3">3</option>
+                            <option th:value="4">4</option>
+                            <option th:value="5">5</option>
+                            <option th:value="6">6</option>
+                            <option th:value="7">7</option>
+                            <option th:value="8">8</option>
+                            <option th:value="9">9</option>
+                            <option th:value="10">10</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Semester:</label>
+                        <select id="semester" name="duration" th:field="*{semester}">
+                            <option th:value="1">1</option>
+                            <option th:value="2">2</option>
+                            <option th:value="3">3</option>
+                            <option th:value="4">4</option>
+                            <option th:value="5">5</option>
+                            <option th:value="6">6</option>
+                            <option th:value="7">7</option>
+                            <option th:value="8">8</option>
+                            <option th:value="9">9</option>
+                            <option th:value="10">10</option>
+                        </select>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Update
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

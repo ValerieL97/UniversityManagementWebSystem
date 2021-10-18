@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Departments</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+            <li class="navbar-brand"><a th:href="@{/departments}">Departments</a></li>
+        </div>
+        <ul class="nav navbar-nav">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </ul>
+    </div>
+</nav>
+<div class ="container">
+    <h1 class="text-center">
+        <span th:text="${departmentName}" th:remove="tag"></span>
+    </h1>
+    <div class="row">
+        <h2>Teachers</h2>
+    </div>
+    <div class="row">
+        <div class = col-Lg-3>
+            <a th:href = "@{/departments/details-d{departmentId}/newTeacher(departmentId=${department.departmentId})}" class ="btn btn-primary btn-sm mb-3">New Teacher</a>
+        </div>
+    </div>
+    <table class = "table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Date Birth</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Number of Classes</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="teacher: ${teachers}">
+            <td th:text="${teacher.teacherName}"></td>
+            <td th:text="${teacher.dateBirth}"></td>
+            <td th:text="${teacher.email}"></td>
+            <td th:text="${teacher.phoneNumber}"></td>
+            <td th:text="${teacher.address}"></td>
+            <td th:text="${teacher.numClasses}"></td>
+            <td>
+                <a th:href="@{/departments/details-d{departmentId}/edit-t{teacherId}(departmentId=${department.departmentId},teacherId=${teacher.id})}"
+                   class="btn btn-primary">Update</a>
+                <a th:href="@{/departments/details-d{departmentId}/td-{teacherId}/(departmentId=${department.departmentId},teacherId=${teacher.id})}"
+                   class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

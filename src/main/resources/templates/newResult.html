@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Department</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+            <li class="navbar-brand"><a th:href="@{/departments}">Departments</a></li>
+            <li class="navbar-brand"><a th:href="@{/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}(departmentId=${department.departmentId},courseId=${course.courseId}, classId=${class.classId})}">Results</a></li>
+        </div>
+        <ul class="nav navbar-nav">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </ul>
+    </div>
+</nav>
+<div th:if="${param.registrationFailed}">
+    <div class="alert alert-info">Student already has the result for this class </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <h1 class="text-center">Add Result</h1>
+            <div class="card-body">
+                <form th:action="@{/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/newResult/(departmentId=${department.departmentId},courseId=${course.courseId}, classId=${class.classId})}" th:object="${results}" method="POST">
+
+                    <div class="form-group">
+                        <label> Student:</label>
+                        <select th:field="*{student}">
+                            <option th:each="student:${students}"
+                                    th:text="${student.studentName}"
+                                    th:value="${student.studentId}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Result:</label>
+                        <select id="result" name="result" th:field="*{result}">
+                            <option th:value="1">1</option>
+                            <option th:value="2">2</option>
+                            <option th:value="3">3</option>
+                            <option th:value="4">4</option>
+                            <option th:value="5">5</option>
+                            <option th:value="6">6</option>
+                            <option th:value="7">7</option>
+                            <option th:value="8">8</option>
+                            <option th:value="9">9</option>
+                            <option th:value="10">10</option>
+                        </select>
+                    </div>
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Register
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

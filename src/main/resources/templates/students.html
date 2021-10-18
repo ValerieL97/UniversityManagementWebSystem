@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+            <li class="navbar-brand"><a th:href="@{/departments}">Departments</a></li>
+        </div>
+        <ul class="nav navbar-nav">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </ul>
+    </div>
+</nav>
+<div class ="container">
+    <h1 class="text-center">
+        <span th:text="${courseName}" th:remove="tag"></span>
+    </h1>
+    <div class="row">
+        <h2>Students</h2>
+    </div>
+    <div class="row">
+        <div class = col-Lg-3>
+            <a th:href = "@{/departments/details-d{departmentId}/details-c{courseId}/newStudent}" class ="btn btn-primary btn-sm mb-3">New Student</a>
+        </div>
+    </div>
+    <table class = "table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Date Birth</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Semester</th>
+            <th>Student ID</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student:${students}">
+            <td th:text="${student.studentName}"></td>
+            <td th:text="${student.dateBirth}"></td>
+            <td th:text="${student.email}"></td>
+            <td th:text="${student.phoneNumber}"></td>
+            <td th:text="${student.year}"></td>
+            <td th:text="${student.code}"></td>
+            <td>
+                <a th:href="@{/departments/details-d{departmentId}/details-c{courseId}/edit-student{studentId}(departmentId=${department.departmentId}, courseId=${course.courseId}, studentId=${student.studentId})}"
+                   class="btn btn-primary">Update</a>
+                <a th:href="@{/departments/details-d{departmentId}/details-c{courseId}/st-{studentId}(departmentId=${department.departmentId},courseId=${course.courseId}, studentId=${student.studentId})}"
+                   class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

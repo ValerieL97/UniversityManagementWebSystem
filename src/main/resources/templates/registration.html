@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns: xmlns:th="http://www.w3.org/1999/xhtml" th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-right navbar-fixed-top bg-dark navbar-dark">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">University Management System</a>
+        </div>
+    </div>
+</nav>
+<div th:if="${param.success1}">
+    <div class="alert alert-info">You already have an account or your data are wrong</div>
+</div>
+<div th:if="${param.success2}">
+    <div class="alert alert-info">Passwords are different!</div>
+</div>
+<form th:action="@{/registration}" th:object="${users}" method="post">
+    <div class="form-group">
+        <label>ID:</label>
+        <input  type="text"
+                name="username"
+                th:field="*{username}"
+                class="form-control"
+                placeholder="Enter your student Id"/>
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <input  type="text"
+                name="email"
+                th:field="*{email}"
+                class="form-control"
+                placeholder="Enter your email"/>
+    </div>
+    <div class="form-group">
+        <label>Password:</label>
+        <input  type="password"
+                name="password"
+                th:field="*{password}"
+                class="form-control"
+                placeholder=""/>
+    </div>
+    <div class="form-group">
+        <label>Confirm Password:</label>
+        <input  type="password"
+                name="passwordConf"
+                th:field="*{passwordConf}"
+                class="form-control"
+                placeholder=""/>
+    </div>
+    <div><input type="submit" value="Register"/></div>
+    <a href="/login">Login Page</a>
+</form>
+</body>
+</html>
