@@ -34,27 +34,22 @@ public class CourseDetailsController {
     }
 
     @GetMapping("/departments/details-d{departmentId}/details-c{courseId}")
-    public String listCoursesClasses(@PathVariable Long departmentId,@PathVariable Long courseId, Model model) {
-        Course mainCourse = courseService.findCourseById(courseId);
+    public String listCoursesClasses(@PathVariable Long departmentId,@PathVariable Long courseId,
+                                     Model model) {
         mainDepartmentId = departmentId;
         mainCourseId = courseId;
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        model.addAttribute("courseName",mainCourse.getName());
-        model.addAttribute("classes",classService.findByCourse(mainCourse));
-        model.addAttribute("students",studentService.findByCourse(mainCourse));
         return "courseDetails";
     }
 
     @GetMapping("/departments/details-d{departmentId}/details-c{courseId}/students")
-    public String listCourseStudents(@PathVariable Long departmentId,@PathVariable Long courseId, Model model) {
-        Course mainCourse = courseService.findCourseById(courseId);
+    public String listCourseStudents(@PathVariable Long departmentId,@PathVariable Long courseId,
+                                     Model model) {
         mainDepartmentId = departmentId;
         mainCourseId = courseId;
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        model.addAttribute("courseName",mainCourse.getName());
-        model.addAttribute("students",studentService.findByCourse(mainCourse));
         return "students";
     }
 
@@ -62,20 +57,19 @@ public class CourseDetailsController {
     public String createClassForm(Model model) {
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        Classes classes = new Classes();
-        model.addAttribute("classes",classes);
-        model.addAttribute("teachers",teacherService.findByDepartment(departmentService.getDepartmentById(mainDepartmentId)));
+        Classes class1 = new Classes();
+        model.addAttribute("class",class1);
         return "newClass";
     }
 
     @PostMapping("/departments/details-d{departmentId}/")
-    public String saveClass(@ModelAttribute("classes") Classes class1, Model model) {
+    public String saveClass(@ModelAttribute("class") Classes class1, Model model) {
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
         class1.setCourse(courseService.findCourseById(mainCourseId));
-        if(classService.existingClass(class1)) {
+        Classes classes = classService.saveClass(class1);
+        if(classes == null) {
             return "redirect:/departments/details-d{departmentId}/details-c{courseId}/newClass?registrationFailed";
         }
-        classService.saveClass(class1);
         return "redirect:/departments/details-d{departmentId}";
     }
 
@@ -84,33 +78,24 @@ public class CourseDetailsController {
     public String editClassForm(@PathVariable Long classId, Model model){
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        model.addAttribute("courses",courseService.findByDepartment(departmentService.getDepartmentById(mainDepartmentId)));
-        Classes classes = classService.getClassById(classId);
-        model.addAttribute("classes",classes);
-        model.addAttribute("teachers",teacherService.findByDepartment(departmentService.getDepartmentById(mainDepartmentId)));
+        Classes class1 = classService.getClassById(classId);
+        model.addAttribute("class",class1);
         return "editClass";
     }
 
     @PostMapping(value={"/departments/details-d{departmentId}/details-c{courseId}/class-{classId}"})
-    public String updateClass(@PathVariable Long classId,@ModelAttribute("classes") Classes classes,
+    public String updateClass(@PathVariable Long classId,@ModelAttribute("class") Classes classes,
                                 Model model) {
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        Classes class1 = classService.getClassById(classId);
-        class1.setTeacher(classes.getTeacher());
-        class1.setClassId(classId);
-        class1.setCourse(classes.getCourse());
-        class1.setClassName(classes.getClassName());
-        class1.setDuration(classes.getDuration());
-        class1.setSemester(classes.getSemester());
-        classService.saveClass(class1);
+        classService.updateClassInfo(classes,classId);
         return "redirect:/departments/details-d{departmentId}/details-c{courseId}";
     }
 
 
     @GetMapping("/departments/details-d{departmentId}/details-c{courseId}/cl-{classId}")
     public String deleteClass(@PathVariable Long classId){
-        classService.deleteClassById(classId);
+        classService.deleteClass(classId);
         return "redirect:/departments/details-d{departmentId}/details-c{courseId}";
     }
 
@@ -119,20 +104,19 @@ public class CourseDetailsController {
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
         Student student = new Student();
-        model.addAttribute("students",student);
+        model.addAttribute("student",student);
         return "newStudent";
     }
 
     @PostMapping("/departments/details-d{departmentId}/details-c{courseId}")
-    public String saveStudent(@ModelAttribute("students")Student student, Model model) {
+    public String saveStudent(@ModelAttribute("student")Student student, Model model) {
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
         student.setCourse(courseService.findCourseById(mainCourseId));
-        student.setCode(studentService.generateCodeForLogin());
-        if(studentService.existingStudent(student)) {
+        Student savedStudent = studentService.saveStudent(student);
+        if(savedStudent == null) {
             return "redirect:/departments/details-d{departmentId}/details-c{courseId}/newStudent?registrationFailed";
         }
-        studentService.saveStudent(student);
         return "redirect:/departments/details-d{departmentId}/details-c{courseId}";
     }
 
@@ -140,36 +124,24 @@ public class CourseDetailsController {
     public String editStudentForm(@PathVariable Long studentId, Model model){
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        model.addAttribute("courses",courseService.findByDepartment(departmentService.getDepartmentById(mainDepartmentId)));
         Student student = studentService.getStudentById(studentId);
-        model.addAttribute("students",student);
+        model.addAttribute("student",student);
         return "editStudent";
     }
 
     @PostMapping(value={"/departments/details-d{departmentId}/details-c{courseId}/student-{studentId}"})
-    public String updateStudent(@PathVariable Long studentId,@ModelAttribute("students") Student student,
+    public String updateStudent(@PathVariable Long studentId,@ModelAttribute("student") Student student,
                               Model model) {
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-
-        Student student1 = studentService.getStudentById(studentId);
-        student1.setStudentId(studentId);
-        student1.setStudentName(student.getStudentName());
-        student1.setDateBirth(student.getDateBirth());
-        student1.setCourse(student.getCourse());
-        student1.setCode(studentService.getStudentById(studentId).getCode());
-        student1.setEmail(student.getEmail());
-        student1.setPhoneNumber(student.getPhoneNumber());
-        student1.setYear(student.getYear());
-        studentService.deleteStudentById(studentId);
-        studentService.saveStudent(student1);
+        Student student1 = studentService.updateStudentInfo(studentId,student);
         return "redirect:/departments/details-d{departmentId}/details-c{courseId}";
     }
 
 
     @GetMapping("/departments/details-d{departmentId}/details-c{courseId}/st-{studentId}")
     public String deleteStudent(@PathVariable Long studentId,Model model){
-        studentService.deleteStudentById(studentId);
+        studentService.deleteStudent(studentId);
         return "redirect:/departments/details-d{departmentId}/details-c{courseId}";
     }
 }
