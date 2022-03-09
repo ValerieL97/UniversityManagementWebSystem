@@ -13,75 +13,42 @@ import java.util.Set;
 
 @Service
 public class TeacherService {
-    private TeacherRepo teacherRepo;
-    private ClassService classService;
+    private final TeacherRepo teacherRepo;
 
-    public TeacherService(TeacherRepo teacherRepo, ClassService classService) {
+    public TeacherService(TeacherRepo teacherRepo) {
         this.teacherRepo = teacherRepo;
-        this.classService = classService;
     }
 
-    public Teacher findTeacherById(Long id){
-        return teacherRepo.getById(id);
-    }
-
-    public Set<Teacher> findByDepartment(Department department) {
-        Set<Teacher> depTeachers = new HashSet<>();
-        for(Teacher teacher : teacherRepo.findAll()) {
-            if(teacher.getDepartment().equals(department)) {
-                depTeachers.add(teacher);
-            }
-        }
-
-        return depTeachers;
-    }
 
     public Teacher saveTeacher(Teacher teacher) {
-        return teacherRepo.save(teacher);
-    }
+        Teacher teacher1 = teacherRepo.findByEmail(teacher.getEmail());
 
-    public Teacher updateTeacher(Teacher teacher) {
-        return teacherRepo.save(teacher);
-    }
-
-    public void deleteTeacher(Long id) {
-        teacherRepo.deleteById(id);
-    }
-
-    public int numberClasses(Teacher teacher) {
-        List<Classes> classes = classService.getAllClasses();
-        int numClasses = 0;
-
-        for(Classes class1 : classes) {
-            if(class1.getTeacher().equals(teacher)) {
-                numClasses = numClasses + 1;
-            }
+        if(teacher1 == null) {
+            return teacherRepo.save(teacher);
         }
 
-        return numClasses;
+        return null;
     }
 
-    public Set<Teacher> findTeacherByDepartment(Department department) {
-        Set<Teacher> depTeachers = new HashSet<>();
-        for(Teacher teacher : teacherRepo.findAll()) {
-            if(teacher.getDepartment().equals(department)) {
-                depTeachers.add(teacher);
-            }
-        }
-
-        return depTeachers;
+    public Teacher findTeacherById(Long teacherId) {
+        return teacherRepo.findById(teacherId).get();
     }
 
-    public boolean existingTeacher(Teacher teacher) {
-        List<Teacher> teachers = teacherRepo.findAll();
-        for (Teacher teacher1 : teachers) {
-            if (teacher1.getEmail().equals(teacher.getEmail()) ||
-                    (teacher1.getEmail().equals(teacher.getEmail()) &&
-                            teacher1.getTeacherName().equals(teacher.getTeacherName()))) {
-                return true;
-            }
-        }
-        return false;
+    public void deleteTeacher(Long teacherId) {
+        teacherRepo.deleteById(teacherId);
+    }
+
+    public Teacher updateTeacherInfo(Teacher teacher, Long teacherId) {
+        Teacher teacher1 = findTeacherById(teacherId);
+        teacher1.setId(teacherId);
+        teacher1.setTeacherName(teacher.getTeacherName());
+        teacher1.setAddress(teacher.getAddress());
+        teacher1.setEmail(teacher.getEmail());
+        teacher1.setDateBirth(teacher.getDateBirth());
+        teacher1.setDepartment(teacher.getDepartment());
+        teacher1.setPhoneNumber(teacher.getPhoneNumber());
+        teacher1.setClasses(teacher.getClasses());
+        return teacherRepo.save(teacher1);
     }
 
 }
