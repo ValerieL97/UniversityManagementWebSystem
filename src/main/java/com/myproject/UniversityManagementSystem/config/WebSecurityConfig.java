@@ -1,7 +1,7 @@
 package com.myproject.UniversityManagementSystem.config;
 
 
-import com.myproject.UniversityManagementSystem.service.UserService;
+import com.myproject.UniversityManagementSystem.service.UserServiceImpl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
