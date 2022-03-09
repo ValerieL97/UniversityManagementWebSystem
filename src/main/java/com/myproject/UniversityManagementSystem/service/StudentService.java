@@ -15,43 +15,14 @@ import java.util.Set;
 @Service
 public class StudentService {
 
-    private StudentRepo studentRepo;
+    private final StudentRepo studentRepo;
 
     public StudentService(StudentRepo studentRepo) {
         this.studentRepo = studentRepo;
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepo.findAll();
-    }
-
-    public Student saveStudent(Student student) {
-        return studentRepo.save(student);
-    }
-
-    public Student updateStudent(Student student) {
-        return studentRepo.save(student);
-    }
-
-    public Student getStudentById(Long id) {
-        return studentRepo.getById(id);
-    }
-
-    public void deleteStudentById(Long id) {
-        studentRepo.deleteById(id);
-    }
-
-    public Set<Student> findByCourse(Course course) {
-        Set<Student> courseStudents = new HashSet<>();
-        for(Student student1 : studentRepo.findAll()) {
-            if(student1.getCourse().equals(course)) {
-                courseStudents.add(student1);
-            }
-        }
-        return courseStudents;
-    }
-
     public String generateCodeForLogin() {
+
         Random random = new Random();
         boolean isTrue = true;
         String code = "";
@@ -65,10 +36,9 @@ public class StudentService {
         } while(isTrue);
 
         return code;
-
     }
 
-    public boolean verifyExistingValues(String string) {
+    private boolean verifyExistingValues(String string) {
         List<Student> students = studentRepo.findAll();
         for(Student student : students) {
             if(student.getCode().equals(string)) {
@@ -79,29 +49,43 @@ public class StudentService {
         return true;
     }
 
-    public Student getStudentByCode(String code) {
-        List<Student> students = studentRepo.findAll();
-        Student student1 = new Student();
 
-        for(Student student : students) {
-            if(student.getCode().equals(code)){
-                student1 = student;
-            }
+    public Student saveStudent(Student student) {
+        Student studentByEmail = studentRepo.findByEmail(student.getEmail());
+        Student studentByName = studentRepo.findByStudentName(student.getStudentName());
+        if(studentByEmail != null || studentByName != null) {
+            return null;
         }
-
-        return student1;
-
+        student.setCode(generateCodeForLogin());
+        return studentRepo.save(student);
     }
 
-    public boolean existingStudent(Student student) {
-        List<Student> students = getAllStudents();
-        for (Student student1 : students) {
-            if (student1.getEmail().equals(student.getEmail()) ||
-                    (student1.getEmail().equals(student.getEmail()) &&
-                            student1.getStudentName().equals(student.getStudentName()))) {
-                return true;
-            }
-        }
-        return false;
+    public List<Student> getAllStudents() {
+        return studentRepo.findAll();
+    }
+
+    public Student getStudentById(Long id) {
+        return studentRepo.getById(id);
+    }
+
+    public void deleteStudent(Long studentId) {
+        studentRepo.deleteById(studentId);
+    }
+
+    public Student getStudentByCode(String code) {
+        return studentRepo.findByCode(code);
+    }
+
+    public Student updateStudentInfo(Long studentId, Student student) {
+        Student student1 = getStudentById(studentId);
+        student1.setId(studentId);
+        student1.setStudentName(student.getStudentName());
+        student1.setDateBirth(student.getDateBirth());
+        student1.setCourse(student.getCourse());
+        student1.setCode(getStudentById(studentId).getCode());
+        student1.setEmail(student.getEmail());
+        student1.setPhoneNumber(student.getPhoneNumber());
+        student1.setYear(student.getYear());
+        return studentRepo.save(student1);
     }
 }
