@@ -10,65 +10,39 @@ import java.util.Set;
 @Service
 public class CourseService {
 
-    private CourseRepo courseRepo;
-    private ClassService classService;
-    private StudentService studentService;
+    private final CourseRepo courseRepo;
 
-    public CourseService(CourseRepo courseRepo, ClassService classService, StudentService studentService) {
+    public CourseService(CourseRepo courseRepo) {
         this.courseRepo = courseRepo;
-        this.classService = classService;
-        this.studentService = studentService;
     }
 
-    public Course findCourseById(Long id){
-        return courseRepo.getById(id);
-    }
-
-    public Set<Course> findByDepartment(Department department) {
-        Set<Course> depCourses = new HashSet<>();
-        for(Course course : courseRepo.findAll()) {
-            if(course.getDepartment().equals(department)) {
-                depCourses.add(course);
-            }
-        }
-
-        return depCourses;
-    }
 
     public Course saveCourse(Course course) {
-        return courseRepo.save(course);
-    }
-
-    public Course updateCourse(Course course) {
-        return courseRepo.save(course);
-    }
-
-    public void deleteCourse(Long id) {
-        courseRepo.deleteById(id);
-    }
-
-    public List<Course> getAllCourses(){
-        return courseRepo.findAll();
-    }
-
-    public int countNumClasses(Long id) {
-        Set<Classes> classes = classService.findByCourse(findCourseById(id));
-        return classes.size();
-    }
-    
-    public int countNumStudents(Long id) {
-        Set<Student> students = studentService.findByCourse(findCourseById(id));
-        return students.size();
-    }
-
-    public boolean existingCourse(Course course) {
-        List<Course> courses = getAllCourses();
-        for (Course course1 : courses) {
-            if (course1.equals(course)) {
-                return true;
-            }
+        Course courseByName = courseRepo.findByName(course.getName());
+        if(courseByName == null) {
+            return courseRepo.save(course);
         }
-        return false;
+        return null;
+    }
+
+    public Course findCourseById(Long courseId) {
+        return courseRepo.findById(courseId).get();
+    }
+
+    public void deleteCourse(Long courseId) {
+        courseRepo.deleteById(courseId);
+    }
+
+    public Course updateCourseInfo(Long courseId, Course course) {
+        Course course1 = findCourseById(courseId);
+        course1.setId(courseId);
+        course1.setDepartment(course.getDepartment());
+        course1.setName(course.getName());
+        course1.setDuration(course.getDuration());
+        course1.setNumStudents(course.getNumStudents());
+        course1.setStudents(course.getStudents());
+        course1.setClasses(course.getClasses());
+        return courseRepo.save(course1);
     }
 
 
