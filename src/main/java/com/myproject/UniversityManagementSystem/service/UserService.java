@@ -14,34 +14,31 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private UserRepo userRepo;
     private StudentService studentService;
     private PasswordEncoder passwordEncoder;
 
-    public UserService(){
 
-    }
-
-    @Autowired
-    public UserService(UserRepo userRepo, StudentService studentService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepo userRepo, StudentService studentService,
+                       PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.studentService = studentService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserByUsername(username);
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getRoles());
-    }
+    public boolean saveUser(User user) {
+        User userByEmail = userRepo.findByEmail(user.getEmail());
+        User userByCode = userRepo.findByUsername(user.getUsername());
+        Student studentByCode = studentService.getStudentByCode(user.getUsername());
 
-    public boolean addNewUser(User user) {
-        User user1 = getUserByEmail(user.getEmail());
-        User user2 = getUserByUsername(user.getUsername());
-
-        if(user1 != null || user2 != null || checkUsername(user2) || checkStudentEmail(user1)) {
+        if(userByEmail == null && userByCode == null && studentByCode != null) {
+            user.setAdmin(false);
+            user.setActive(true);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Collections.singleton(Role.ADMIN));
+            userRepo.save(user);
             return true;
         }
 
@@ -49,53 +46,9 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public boolean checkUsername(User user) {
-        List<Student> students = studentService.getAllStudents();
-        for(Student student : students) {
-            if (student.getCode().equals(user.getUsername())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean checkStudentEmail(User user) {
-        List<Student> students = studentService.getAllStudents();
-        for(Student student : students) {
-            if (student.getEmail().equals(user.getEmail())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public User getUserByUsername(String code) {
-        List<User> users = userRepo.findAll();
-        User user = new User();
-
-        for (User user1 : users) {
-            if (user1.getUsername().equals(code)) {
-                user = user1;
-            }
-        }
-
-        return user;
+        return userRepo.findByUsername(code);
     }
-
-    public User getUserByEmail(String email) {
-        List<User> users = userRepo.findAll();
-        User user = new User();
-
-        for (User user1 : users) {
-            if (user1.getEmail().equals(email)) {
-                user = user1;
-            }
-        }
-
-        return user;
-    }
-
-
 
 }
