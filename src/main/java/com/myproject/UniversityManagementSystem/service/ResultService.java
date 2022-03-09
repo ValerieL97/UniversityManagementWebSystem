@@ -14,63 +14,44 @@ import java.util.Set;
 @Service
 public class ResultService {
 
-    private ResultRepo resultRepo;
-    private StudentService studentService;
+    private final ResultRepo resultRepo;
 
-    public ResultService(ResultRepo resultRepo, StudentService studentService) {
-
+    public ResultService(ResultRepo resultRepo) {
         this.resultRepo = resultRepo;
-        this.studentService = studentService;
     }
 
-    public Set<Result> findByClass(Classes class1) {
-        Set<Result> resultsClass = new HashSet<>();
+    public List<Result> findByClass(Classes mainClass) {
+        List<Result> resultsByClass = resultRepo.findByClasses(mainClass);
         for(Result result : resultRepo.findAll()) {
             if(result.getClasses()!= null) {
-                if (result.getClasses().equals(class1)) {
-                    resultsClass.add(result);
+                if (result.getClasses().equals(mainClass)) {
+                    resultsByClass.add(result);
                 }
             }
         }
-        return resultsClass;
+
+        return resultsByClass;
+
     }
 
-    public Set<Result> findByStudent(Student student) {
-        Set<Result> resultsStudent = new HashSet<>();
-        for(Result result : resultRepo.findAll()) {
-            if(result.getStudent().equals(student)) {
-                resultsStudent.add(result);
-            }
-        }
-        return resultsStudent;
+    public boolean saveResult(Result result) {
+       List<Result> resultsByStudent = resultRepo.findByStudent(result.getStudent());
+
+       for(Result result1 : resultsByStudent) {
+           if(result1.getClasses().equals(result.getClasses())) {
+               return false;
+           }
+       }
+
+       resultRepo.save(result);
+       return true;
     }
 
-    public Result saveResult(Result result) {
-
-        return resultRepo.save(result);
+    public void deleteResult(Long resultId) {
+        resultRepo.deleteById(resultId);
     }
 
-    public Result updateResult(Result result) {
-
-        return resultRepo.save(result);
-    }
-
-    public Result getResultById(Long id) {
-
-        return resultRepo.getById(id);
-    }
-
-    public void deleteResult(Long id) {
-        resultRepo.deleteById(id);
-    }
-
-    public boolean existingResult(Long studentId) {
-        List<Result> results = resultRepo.findAll();
-        for (Result result1 : results) {
-            if (result1.getStudent().equals(studentService.getStudentById(studentId))) {
-                return true;
-            }
-        }
-        return false;
+    public List<Result> findResultsByStudent(Student student) {
+        return resultRepo.findByStudent(student);
     }
 }
