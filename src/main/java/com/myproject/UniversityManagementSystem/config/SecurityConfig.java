@@ -17,6 +17,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService createUserDetailsService() {
-        return new UserService();
+        return new UserServiceImpl();
     }
 }
