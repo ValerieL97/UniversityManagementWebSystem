@@ -46,7 +46,6 @@ public class ClassDetailsController {
         mainClassId = classId;
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
-        model.addAttribute("className",mainClass.getClassName());
         model.addAttribute("class",mainClass);
         model.addAttribute("results", resultService.findByClass(mainClass));
         return "classDetails";
@@ -58,24 +57,21 @@ public class ClassDetailsController {
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
         model.addAttribute("class",classService.getClassById(mainClassId));
         Result result = new Result();
-        model.addAttribute("results",result);
-        model.addAttribute("students", studentService.findByCourse(courseService.findCourseById(mainCourseId)));
+        model.addAttribute("result",result);
         return "newResult";
     }
 
     @PostMapping("/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/newResult/")
-    public String saveResult(@ModelAttribute("results") Result result, Model model) {
+    public String saveResult(@ModelAttribute("result") Result result, Model model) {
         model.addAttribute("department",departmentService.getDepartmentById(mainDepartmentId));
         model.addAttribute("course",courseService.findCourseById(mainCourseId));
         model.addAttribute("class",classService.getClassById(mainClassId));
         result.setClasses(classService.getClassById(mainClassId));
-        if(resultService.existingResult(result.getStudent().getStudentId())) {
+        if(!resultService.saveResult(result)) {
             return "redirect:/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/newResult?registrationFailed";
         }
-        resultService.saveResult(result);
         return "redirect:/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/newResult";
     }
-
 
     @GetMapping("/departments/details-d{departmentId}/details-c{courseId}/details-class{classId}/r-{resultId}")
     public String deleteResult(@PathVariable Long resultId){
