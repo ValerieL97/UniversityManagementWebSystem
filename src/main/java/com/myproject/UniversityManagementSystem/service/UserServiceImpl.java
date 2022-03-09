@@ -1,7 +1,7 @@
-package com.example.UniversityManagementSystem.service;
+package com.myproject.UniversityManagementSystem.service;
 
-import com.example.UniversityManagementSystem.models.User;
-import com.example.UniversityManagementSystem.repositories.UserRepo;
+import com.myproject.UniversityManagementSystem.models.User;
+import com.myproject.UniversityManagementSystem.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
