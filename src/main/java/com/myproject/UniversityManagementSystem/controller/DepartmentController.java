@@ -29,12 +29,9 @@ public class DepartmentController {
         List<Department> departmentList = departmentService.getAllDepartments();
 
         for(Department department : departmentList) {
-            int numCourses = departmentService.countNumberCourses(department.getDepartmentId());
-            int numTeachers = departmentService.countNumberTeachers(department.getDepartmentId());
-            int numStudents = departmentService.countNumberStudents(department.getDepartmentId());
-            department.setNumStudents(numStudents);
-            department.setNumTeachers(numTeachers);
-            department.setNumCourses(numCourses);
+            department.setNumStudents(departmentService.calculateNumberOfStudents(department));
+            department.setNumTeachers(department.getTeachers().size());
+            department.setNumCourses(department.getCourses().size());
         }
 
         model.addAttribute("departments",departmentList);
@@ -44,12 +41,12 @@ public class DepartmentController {
     @GetMapping("/departments/new")
     public String createDepartmentForm(Model model) {
         Department department = new Department();
-        model.addAttribute("departments",department);
+        model.addAttribute("department",department);
         return "newDepartment";
     }
 
     @PostMapping("/departments")
-    public String saveDepartment(@ModelAttribute("departments")Department department) {
+    public String saveDepartment(@ModelAttribute("department")Department department) {
         if(departmentService.existingDepartment(department.getDepartmentName())) {
             return "redirect:/departments/new?registrationFailed";
         }
@@ -59,16 +56,15 @@ public class DepartmentController {
 
     @GetMapping("/departments/edit/{id}")
     public String editDepartmentForm(@PathVariable Long id, Model model){
-        model.addAttribute("departments",departmentService.getDepartmentById(id));
+        model.addAttribute("department",departmentService.getDepartmentById(id));
         return "editDepartment";
     }
 
     @PostMapping("/departments/{id}")
-    public String updateDepartment(@PathVariable Long id, @ModelAttribute("departments") Department department,
-                               Model model) {
+    public String updateDepartment(@PathVariable Long id, @ModelAttribute("department") Department department) {
 
         Department dep = departmentService.getDepartmentById(id);
-        dep.setDepartmentId(id);
+        dep.setId(id);
         dep.setDepartmentName(department.getDepartmentName());
         dep.setCourses(department.getCourses());
         dep.setTeachers(department.getTeachers());
