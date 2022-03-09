@@ -15,11 +15,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserService userService;
+    
+    private UserServiceImpl userService;
     private PasswordEncoder passwordEncoder;
 
 
-    public WebSecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserServiceImpl userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -50,10 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)
                 .passwordEncoder(passwordEncoder);
-
-
-
     }
+
 
 
 }
